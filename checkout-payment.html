@@ -1,0 +1,1448 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Checkout | The Aura Collection</title>
+    
+    <!-- Google Fonts - Premium Typography -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600&family=Playfair+Display:wght@400;500;600&family=Outfit:wght@300;400;500&display=swap" rel="stylesheet">
+    
+    <style>
+        /* ========================================
+           RESET & ROOT VARIABLES
+           ======================================== */
+        
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        :root {
+            /* Rich, warm color palette */
+            --bg-primary: #f5f1ed;
+            --bg-secondary: #fdfcfb;
+            --bg-accent: #f9f6f3;
+            --border-light: #e5ddd5;
+            --border-medium: #d4c7b8;
+            
+            --text-primary: #2c2420;
+            --text-secondary: #6b5d52;
+            --text-muted: #9a8a7a;
+            
+            /* Warm accent - rose gold and terracotta */
+            --accent-primary: #b8936f;
+            --accent-secondary: #d4a574;
+            --accent-light: #f0e8df;
+            --accent-hover: #a07d58;
+            --accent-dark: #8b6f4d;
+            
+            /* Status colors - warm versions */
+            --success-bg: #f0f4ed;
+            --success-border: #d4e3c8;
+            --success-text: #4a6741;
+            
+            --error-bg: #faf0ed;
+            --error-border: #f0d4cc;
+            --error-text: #8b4a3d;
+            
+            /* Shadows - warmer tones */
+            --shadow-sm: 0 1px 3px rgba(139, 111, 77, 0.08);
+            --shadow-md: 0 4px 8px rgba(139, 111, 77, 0.12);
+            --shadow-lg: 0 10px 20px rgba(139, 111, 77, 0.15);
+        }
+
+        body {
+            font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+            background: var(--bg-primary);
+            color: var(--text-primary);
+            line-height: 1.6;
+            overflow-x: hidden;
+            -webkit-font-smoothing: antialiased;
+            -moz-osx-font-smoothing: grayscale;
+        }
+
+        /* ========================================
+           WARM ANIMATED BACKGROUND
+           ======================================== */
+        .background {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            z-index: 0;
+            background: 
+                radial-gradient(circle at 20% 30%, rgba(184, 147, 111, 0.08) 0%, transparent 50%),
+                radial-gradient(circle at 80% 70%, rgba(212, 165, 116, 0.06) 0%, transparent 60%),
+                radial-gradient(circle at 50% 50%, rgba(240, 232, 223, 0.4) 0%, transparent 100%);
+            background-attachment: fixed;
+        }
+
+        .background::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-image: 
+                linear-gradient(90deg, rgba(139, 111, 77, 0.02) 1px, transparent 1px),
+                linear-gradient(rgba(139, 111, 77, 0.02) 1px, transparent 1px);
+            background-size: 60px 60px;
+            opacity: 0.5;
+        }
+
+        /* ========================================
+           HEADER
+           ======================================== */
+        .header {
+            position: sticky;
+            top: 0;
+            z-index: 100;
+            padding: 1.25rem 2rem;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            background: rgba(253, 252, 251, 0.95);
+            backdrop-filter: blur(12px);
+            -webkit-backdrop-filter: blur(12px);
+            border-bottom: 1px solid var(--border-light);
+            box-shadow: var(--shadow-sm);
+        }
+
+        .logo {
+            font-family: 'Playfair Display', serif;
+            font-size: 1.5rem;
+            font-weight: 600;
+            letter-spacing: 0.15em;
+            text-decoration: none;
+            color: var(--text-primary);
+            transition: color 0.3s ease;
+        }
+
+        .logo:hover {
+            color: var(--accent-primary);
+        }
+
+        .header-progress {
+            display: flex;
+            align-items: center;
+            gap: 0.75rem;
+        }
+
+        .progress-dot {
+            width: 8px;
+            height: 8px;
+            border-radius: 50%;
+            background: var(--accent-primary);
+            animation: pulse 2s ease-in-out infinite;
+        }
+
+        @keyframes pulse {
+            0%, 100% { opacity: 1; transform: scale(1); }
+            50% { opacity: 0.6; transform: scale(0.9); }
+        }
+
+        .progress-text {
+            font-size: 0.8125rem;
+            font-weight: 500;
+            color: var(--text-secondary);
+            letter-spacing: 0.05em;
+        }
+
+        /* ========================================
+           MAIN CONTAINER
+           ======================================== */
+        .checkout-container {
+            position: relative;
+            z-index: 1;
+            max-width: 1280px;
+            margin: 0 auto;
+            padding: 2.5rem 1.5rem;
+            display: grid;
+            grid-template-columns: 1.3fr 1fr;
+            gap: 2rem;
+            align-items: start;
+        }
+
+        @media (max-width: 1024px) {
+            .checkout-container {
+                grid-template-columns: 1fr;
+                padding: 2rem 1rem;
+            }
+        }
+
+        /* ========================================
+           CARD SECTIONS
+           ======================================== */
+        .info-section,
+        .payment-section {
+            background: var(--bg-secondary);
+            border-radius: 16px;
+            padding: 2rem;
+            border: 1px solid var(--border-light);
+            box-shadow: var(--shadow-md);
+        }
+
+        .section-header {
+            margin-bottom: 2rem;
+            padding-bottom: 1rem;
+            border-bottom: 1px solid var(--border-light);
+        }
+
+        .section-title {
+            font-family: 'Playfair Display', serif;
+            font-size: 1.75rem;
+            font-weight: 600;
+            margin-bottom: 0.5rem;
+            color: var(--text-primary);
+        }
+
+        .section-subtitle {
+            font-size: 0.875rem;
+            color: var(--text-secondary);
+            font-weight: 400;
+        }
+
+        /* ========================================
+           FORM STYLES
+           ======================================== */
+        .checkout-form {
+            display: flex;
+            flex-direction: column;
+            gap: 2rem;
+        }
+
+        .form-section {
+            display: flex;
+            flex-direction: column;
+            gap: 1.25rem;
+        }
+
+        .form-section-title {
+            font-family: 'Outfit', sans-serif;
+            font-size: 0.875rem;
+            font-weight: 600;
+            color: var(--accent-dark);
+            text-transform: uppercase;
+            letter-spacing: 0.08em;
+            margin-bottom: 0.5rem;
+        }
+
+        .form-group {
+            display: flex;
+            flex-direction: column;
+            gap: 0.5rem;
+        }
+
+        .form-row {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 1rem;
+        }
+
+        @media (max-width: 640px) {
+            .form-row {
+                grid-template-columns: 1fr;
+            }
+        }
+
+        .form-label {
+            font-size: 0.8125rem;
+            font-weight: 500;
+            color: var(--text-primary);
+            margin-bottom: 0.25rem;
+        }
+
+        .form-input,
+        .form-textarea {
+            width: 100%;
+            padding: 0.75rem 1rem;
+            background: var(--bg-accent);
+            border: 1.5px solid var(--border-light);
+            border-radius: 8px;
+            color: var(--text-primary);
+            font-family: inherit;
+            font-size: 0.9375rem;
+            transition: all 0.2s ease;
+        }
+
+        .form-input:hover,
+        .form-textarea:hover {
+            border-color: var(--border-medium);
+        }
+
+        .form-input:focus,
+        .form-textarea:focus {
+            outline: none;
+            border-color: var(--accent-primary);
+            background: var(--bg-secondary);
+            box-shadow: 0 0 0 3px rgba(184, 147, 111, 0.1);
+        }
+
+        .form-input::placeholder,
+        .form-textarea::placeholder {
+            color: var(--text-muted);
+        }
+
+        .form-textarea {
+            resize: vertical;
+            min-height: 80px;
+        }
+
+        .form-hint {
+            font-size: 0.75rem;
+            color: var(--text-muted);
+            font-style: italic;
+        }
+
+        /* ========================================
+           PAYMENT OPTIONS
+           ======================================== */
+        .payment-options {
+            display: flex;
+            flex-direction: column;
+            gap: 0.75rem;
+            margin-bottom: 2rem;
+        }
+
+        .payment-option {
+            border-radius: 12px;
+            border: 1.5px solid var(--border-light);
+            background: var(--bg-accent);
+            overflow: hidden;
+            transition: all 0.25s ease;
+        }
+
+        .payment-option:hover {
+            border-color: var(--border-medium);
+            box-shadow: var(--shadow-sm);
+        }
+
+        .payment-option.active {
+            border-color: var(--accent-primary);
+            background: var(--accent-light);
+            box-shadow: var(--shadow-md);
+        }
+
+        .option-header {
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+            padding: 1rem 1.25rem;
+            cursor: pointer;
+            transition: background 0.2s ease;
+        }
+
+        .option-radio {
+            width: 18px;
+            height: 18px;
+            border: 2px solid var(--border-medium);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            transition: all 0.2s ease;
+            flex-shrink: 0;
+        }
+
+        .payment-option.active .option-radio {
+            border-color: var(--accent-primary);
+            border-width: 2px;
+        }
+
+        .radio-dot {
+            width: 8px;
+            height: 8px;
+            background: var(--accent-primary);
+            border-radius: 50%;
+            transform: scale(0);
+            transition: transform 0.2s ease;
+        }
+
+        .payment-option.active .radio-dot {
+            transform: scale(1);
+        }
+
+        .option-info {
+            flex: 1;
+        }
+
+        .option-title {
+            font-size: 0.9375rem;
+            font-weight: 600;
+            margin-bottom: 0.125rem;
+            color: var(--text-primary);
+        }
+
+        .option-description {
+            font-size: 0.8125rem;
+            color: var(--text-secondary);
+        }
+
+        .option-content {
+            max-height: 0;
+            overflow: hidden;
+            transition: max-height 0.4s ease;
+        }
+
+        .payment-option.active .option-content {
+            max-height: 1000px;
+        }
+
+        /* ========================================
+           QR PAYMENT
+           ======================================== */
+        .qr-container {
+            padding: 1.25rem;
+            display: flex;
+            flex-direction: column;
+            gap: 1.25rem;
+        }
+
+        .qr-placeholder {
+            text-align: center;
+            padding: 1.5rem;
+            background: var(--bg-secondary);
+            border-radius: 12px;
+            border: 2px dashed var(--border-medium);
+        }
+
+        .qr-code-image {
+            width: 180px;
+            height: 180px;
+            margin: 0 auto 1rem;
+            object-fit: contain;
+            background: white;
+            padding: 1rem;
+            border-radius: 8px;
+            border: 1px solid var(--border-light);
+        }
+
+        .qr-instruction {
+            font-size: 0.8125rem;
+            color: var(--text-secondary);
+        }
+
+        .payment-details {
+            display: flex;
+            flex-direction: column;
+            gap: 0.75rem;
+            padding: 1rem;
+            background: var(--bg-secondary);
+            border-radius: 8px;
+            border: 1px solid var(--border-light);
+        }
+
+        .detail-item {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .detail-label {
+            font-size: 0.8125rem;
+            color: var(--text-secondary);
+        }
+
+        .detail-value {
+            font-weight: 600;
+            color: var(--text-primary);
+            font-size: 0.9375rem;
+        }
+
+        /* ========================================
+           FILE UPLOAD
+           ======================================== */
+        .upload-section {
+            position: relative;
+        }
+
+        .upload-label {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            gap: 0.75rem;
+            padding: 1.75rem;
+            border: 2px dashed var(--border-medium);
+            border-radius: 12px;
+            background: var(--bg-secondary);
+            cursor: pointer;
+            transition: all 0.2s ease;
+        }
+
+        .upload-label:hover {
+            border-color: var(--accent-primary);
+            background: var(--accent-light);
+        }
+
+        .upload-icon {
+            width: 2rem;
+            height: 2rem;
+            color: var(--accent-primary);
+        }
+
+        .upload-text {
+            font-weight: 500;
+            color: var(--text-primary);
+            font-size: 0.875rem;
+        }
+
+        .upload-hint {
+            font-size: 0.75rem;
+            color: var(--text-muted);
+        }
+
+        .upload-input {
+            display: none;
+        }
+
+        .upload-preview {
+            display: none;
+            align-items: center;
+            gap: 0.75rem;
+            padding: 0.875rem 1rem;
+            margin-top: 0.75rem;
+            background: var(--success-bg);
+            border: 1px solid var(--success-border);
+            border-radius: 8px;
+        }
+
+        .upload-preview.active {
+            display: flex;
+        }
+
+        .preview-icon {
+            width: 1.25rem;
+            height: 1.25rem;
+            color: var(--success-text);
+            flex-shrink: 0;
+        }
+
+        .preview-text {
+            flex: 1;
+            font-size: 0.8125rem;
+            color: var(--text-primary);
+        }
+
+        .remove-btn {
+            padding: 0.375rem 0.75rem;
+            background: white;
+            border: 1px solid var(--border-light);
+            border-radius: 6px;
+            font-size: 0.75rem;
+            cursor: pointer;
+            transition: all 0.2s ease;
+            color: var(--text-primary);
+            font-weight: 500;
+        }
+
+        .remove-btn:hover {
+            background: var(--bg-accent);
+            border-color: var(--border-medium);
+        }
+
+        /* ========================================
+           CASH ON DELIVERY
+           ======================================== */
+        .cod-info {
+            padding: 1.25rem;
+            display: flex;
+            flex-direction: column;
+            gap: 1.25rem;
+        }
+
+        .info-card {
+            display: flex;
+            gap: 1rem;
+            padding: 1.25rem;
+            background: var(--bg-secondary);
+            border-radius: 10px;
+            border: 1px solid var(--border-light);
+        }
+
+        .info-icon {
+            width: 1.75rem;
+            height: 1.75rem;
+            color: var(--accent-primary);
+            flex-shrink: 0;
+        }
+
+        .info-content {
+            flex: 1;
+        }
+
+        .info-title {
+            font-size: 0.9375rem;
+            font-weight: 600;
+            margin-bottom: 0.75rem;
+            color: var(--text-primary);
+        }
+
+        .info-list {
+            list-style: none;
+            display: flex;
+            flex-direction: column;
+            gap: 0.5rem;
+        }
+
+        .info-list li {
+            font-size: 0.8125rem;
+            color: var(--text-secondary);
+            padding-left: 1.25rem;
+            position: relative;
+            line-height: 1.5;
+        }
+
+        .info-list li::before {
+            content: "•";
+            position: absolute;
+            left: 0.375rem;
+            color: var(--accent-primary);
+            font-size: 1.25rem;
+            line-height: 1;
+        }
+
+        .cod-amount {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 1rem 1.25rem;
+            background: var(--accent-light);
+            border: 1px solid rgba(184, 147, 111, 0.25);
+            border-radius: 10px;
+        }
+
+        .amount-label {
+            font-size: 0.8125rem;
+            color: var(--text-secondary);
+            font-weight: 500;
+        }
+
+        .amount-value {
+            font-size: 1.25rem;
+            font-weight: 700;
+            color: var(--accent-primary);
+        }
+
+        /* ========================================
+           ORDER SUMMARY
+           ======================================== */
+        .order-summary {
+            padding: 1.5rem;
+            background: var(--accent-light);
+            border-radius: 12px;
+            border: 1px solid rgba(184, 147, 111, 0.2);
+            margin-bottom: 1.5rem;
+        }
+
+        .summary-title {
+            font-size: 0.875rem;
+            font-weight: 600;
+            margin-bottom: 1rem;
+            text-transform: uppercase;
+            letter-spacing: 0.05em;
+            color: var(--accent-dark);
+        }
+
+        .summary-items {
+            display: flex;
+            flex-direction: column;
+            gap: 0.75rem;
+        }
+
+        .summary-row {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            font-size: 0.875rem;
+        }
+
+        .summary-row.total {
+            font-size: 1.125rem;
+            font-weight: 700;
+            padding-top: 0.75rem;
+            margin-top: 0.25rem;
+        }
+
+        .summary-row.total .summary-value {
+            color: var(--accent-primary);
+        }
+
+        .summary-label {
+            color: var(--text-secondary);
+        }
+
+        .summary-value {
+            font-weight: 600;
+            color: var(--text-primary);
+        }
+
+        .summary-divider {
+            height: 1px;
+            background: rgba(184, 147, 111, 0.2);
+            margin: 0.5rem 0;
+        }
+
+        /* ========================================
+           BUTTONS
+           ======================================== */
+        .submit-btn {
+            width: 100%;
+            padding: 1rem 1.5rem;
+            background: linear-gradient(135deg, var(--accent-primary) 0%, var(--accent-secondary) 100%);
+            border: none;
+            border-radius: 10px;
+            color: white;
+            font-family: inherit;
+            font-size: 0.9375rem;
+            font-weight: 600;
+            letter-spacing: 0.02em;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 0.5rem;
+            margin-bottom: 1rem;
+            box-shadow: 0 4px 12px rgba(184, 147, 111, 0.3);
+        }
+
+        .submit-btn:hover {
+            background: linear-gradient(135deg, var(--accent-hover) 0%, var(--accent-primary) 100%);
+            box-shadow: 0 6px 16px rgba(184, 147, 111, 0.4);
+            transform: translateY(-2px);
+        }
+
+        .submit-btn:active {
+            transform: translateY(0);
+        }
+
+        .btn-icon {
+            width: 1.125rem;
+            height: 1.125rem;
+            transition: transform 0.3s ease;
+        }
+
+        .submit-btn:hover .btn-icon {
+            transform: translateX(3px);
+        }
+
+        /* ========================================
+           SECURITY BADGE
+           ======================================== */
+        .security-badge {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 0.5rem;
+            padding: 0.75rem;
+            background: var(--success-bg);
+            border: 1px solid var(--success-border);
+            border-radius: 8px;
+        }
+
+        .security-icon {
+            width: 1rem;
+            height: 1rem;
+            color: var(--success-text);
+        }
+
+        .security-text {
+            font-size: 0.75rem;
+            color: var(--text-secondary);
+        }
+
+        /* ========================================
+           STICKY PAYMENT SECTION
+           ======================================== */
+        @media (min-width: 1025px) {
+            .payment-section {
+                position: sticky;
+                top: 6rem;
+            }
+        }
+
+        /* ========================================
+           RESPONSIVE
+           ======================================== */
+        @media (max-width: 768px) {
+            .header {
+                padding: 1rem 1.5rem;
+            }
+
+            .logo {
+                font-size: 1.25rem;
+            }
+
+            .section-title {
+                font-size: 1.5rem;
+            }
+
+            .info-section,
+            .payment-section {
+                padding: 1.5rem;
+            }
+        }
+
+        @media (max-width: 480px) {
+            .checkout-container {
+                padding: 1.5rem 1rem;
+            }
+
+            .info-section,
+            .payment-section {
+                padding: 1.25rem;
+            }
+        }
+    </style>
+</head>
+<body>
+
+    <!-- Warm Animated Background -->
+    <div class="background"></div>
+
+    <!-- Header -->
+    <header class="header">
+        <a href="index.html" class="logo">AURA</a>
+        <div class="header-progress">
+            <div class="progress-dot"></div>
+            <span class="progress-text">Secure Checkout</span>
+        </div>
+    </header>
+
+    <!-- Main Content -->
+    <main class="checkout-container">
+        
+        <!-- Left Section - Customer Information -->
+        <section class="info-section">
+            <div class="section-header">
+                <h2 class="section-title">Delivery Information</h2>
+                <p class="section-subtitle">We'll use these details to ensure your order reaches you safely</p>
+            </div>
+
+            <form id="checkoutForm" class="checkout-form">
+                
+                <!-- Contact Information -->
+                <div class="form-section">
+                    <h3 class="form-section-title">Contact Details</h3>
+                    
+                    <div class="form-group">
+                        <label for="fullName" class="form-label">Full Name</label>
+                        <input 
+                            type="text" 
+                            id="fullName" 
+                            name="fullName" 
+                            class="form-input" 
+                            placeholder="Enter your full name"
+                            required
+                        >
+                    </div>
+
+                    <div class="form-row">
+                        <div class="form-group">
+                            <label for="email" class="form-label">Email Address</label>
+                            <input 
+                                type="email" 
+                                id="email" 
+                                name="email" 
+                                class="form-input" 
+                                placeholder="your.email@example.com"
+                                required
+                            >
+                        </div>
+
+                        <div class="form-group">
+                            <label for="phone" class="form-label">Phone Number</label>
+                            <input 
+                                type="tel" 
+                                id="phone" 
+                                name="phone" 
+                                class="form-input" 
+                                placeholder="+977 98XXXXXXXX"
+                                required
+                            >
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Shipping Address -->
+                <div class="form-section">
+                    <h3 class="form-section-title">Shipping Address</h3>
+                    
+                    <div class="form-group">
+                        <label for="address" class="form-label">Street Address</label>
+                        <input 
+                            type="text" 
+                            id="address" 
+                            name="address" 
+                            class="form-input" 
+                            placeholder="House number, street name"
+                            required
+                        >
+                    </div>
+
+                    <div class="form-row">
+                        <div class="form-group">
+                            <label for="city" class="form-label">City</label>
+                            <input 
+                                type="text" 
+                                id="city" 
+                                name="city" 
+                                class="form-input" 
+                                placeholder="City"
+                                required
+                            >
+                        </div>
+
+                        <div class="form-group">
+                            <label for="state" class="form-label">State/Province</label>
+                            <input 
+                                type="text" 
+                                id="state" 
+                                name="state" 
+                                class="form-input" 
+                                placeholder="State or Province"
+                                required
+                            >
+                        </div>
+                    </div>
+
+                    <div class="form-row">
+                        <div class="form-group">
+                            <label for="postalCode" class="form-label">Postal Code</label>
+                            <input 
+                                type="text" 
+                                id="postalCode" 
+                                name="postalCode" 
+                                class="form-input" 
+                                placeholder="Postal Code"
+                                required
+                            >
+                        </div>
+
+                        <div class="form-group">
+                            <label for="country" class="form-label">Country</label>
+                            <input 
+                                type="text" 
+                                id="country" 
+                                name="country" 
+                                class="form-input" 
+                                placeholder="Nepal"
+                                value="Nepal"
+                                required
+                            >
+                        </div>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="location" class="form-label">Location Coordinates (Optional)</label>
+                        <input 
+                            type="text" 
+                            id="location" 
+                            name="location" 
+                            class="form-input" 
+                            placeholder="Latitude, Longitude or Google Maps Link"
+                        >
+                        <span class="form-hint">Share your location to help us deliver faster</span>
+                    </div>
+                </div>
+
+                <!-- Additional Notes -->
+                <div class="form-section">
+                    <div class="form-group">
+                        <label for="notes" class="form-label">Delivery Instructions (Optional)</label>
+                        <textarea 
+                            id="notes" 
+                            name="notes" 
+                            class="form-textarea" 
+                            placeholder="Any special delivery instructions..."
+                            rows="3"
+                        ></textarea>
+                    </div>
+                </div>
+
+            </form>
+        </section>
+
+        <!-- Right Section - Payment Options -->
+        <section class="payment-section">
+            <div class="section-header">
+                <h2 class="section-title">Payment Method</h2>
+                <p class="section-subtitle">Choose your preferred way to pay</p>
+            </div>
+
+            <!-- Payment Options -->
+            <div class="payment-options">
+                
+                <!-- QR Payment Option -->
+                <div class="payment-option active" id="qrOption">
+                    <div class="option-header" onclick="selectPaymentMethod('qr')">
+                        <div class="option-radio">
+                            <div class="radio-dot"></div>
+                        </div>
+                        <div class="option-info">
+                            <h3 class="option-title">QR Payment</h3>
+                            <p class="option-description">Scan & Pay via eSewa, Khalti, or Bank App</p>
+                        </div>
+                    </div>
+                    <div class="option-content" id="qrContent">
+                        <div class="qr-container">
+                            <div class="qr-placeholder">
+                                <img id="qrImage" src="qr-code-placeholder.png" alt="QR Code for Payment" class="qr-code-image">
+                                <p class="qr-instruction">Scan this QR code with your payment app</p>
+                            </div>
+                            
+                            <div class="payment-details">
+                                <div class="detail-item">
+                                    <span class="detail-label">Amount</span>
+                                    <span class="detail-value" id="qrAmount">Rs. 0.00</span>
+                                </div>
+                                <div class="detail-item">
+                                    <span class="detail-label">Payment To</span>
+                                    <span class="detail-value">Aura Atelier</span>
+                                </div>
+                            </div>
+
+                            <!-- Upload Payment Screenshot -->
+                            <div class="upload-section">
+                                <label for="paymentProof" class="upload-label">
+                                    <svg class="upload-icon" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M7 16a4 4 0 01-.88-7.903A5 5 0 1115.9 6L16 6a5 5 0 011 9.9M15 13l-3-3m0 0l-3 3m3-3v12"/>
+                                    </svg>
+                                    <span class="upload-text">Upload Payment Screenshot</span>
+                                    <span class="upload-hint">PNG, JPG up to 5MB</span>
+                                </label>
+                                <input 
+                                    type="file" 
+                                    id="paymentProof" 
+                                    name="paymentProof" 
+                                    class="upload-input" 
+                                    accept="image/png, image/jpeg, image/jpg"
+                                    onchange="handleFileUpload(event)"
+                                >
+                                <div id="uploadPreview" class="upload-preview"></div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Cash on Delivery Option -->
+                <div class="payment-option" id="codOption">
+                    <div class="option-header" onclick="selectPaymentMethod('cod')">
+                        <div class="option-radio">
+                            <div class="radio-dot"></div>
+                        </div>
+                        <div class="option-info">
+                            <h3 class="option-title">Cash on Delivery</h3>
+                            <p class="option-description">Pay when your order arrives</p>
+                        </div>
+                    </div>
+                    <div class="option-content" id="codContent">
+                        <div class="cod-info">
+                            <div class="info-card">
+                                <svg class="info-icon" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"/>
+                                </svg>
+                                <div class="info-content">
+                                    <h4 class="info-title">How it works</h4>
+                                    <ul class="info-list">
+                                        <li>Your order will be confirmed upon submission</li>
+                                        <li>Pay in cash when delivery arrives at your doorstep</li>
+                                        <li>Please keep exact change ready for smooth delivery</li>
+                                    </ul>
+                                </div>
+                            </div>
+                            
+                            <div class="cod-amount">
+                                <span class="amount-label">Amount to pay on delivery</span>
+                                <span class="amount-value" id="codAmount">Rs. 4,850</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+            </div>
+
+            <!-- Order Summary -->
+            <div class="order-summary">
+                <h3 class="summary-title">Order Summary</h3>
+                <div class="summary-items">
+                    <div class="summary-row">
+                        <span class="summary-label">Subtotal</span>
+                        <span class="summary-value">Rs. 4,850</span>
+                    </div>
+                    <div class="summary-row">
+                        <span class="summary-label">Delivery Fee</span>
+                        <span class="summary-value">Free</span>
+                    </div>
+                    <div class="summary-divider"></div>
+                    <div class="summary-row total">
+                        <span class="summary-label">Total</span>
+                        <span class="summary-value">Rs. 4,850</span>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Submit Button -->
+            <button type="submit" class="submit-btn" onclick="handleCheckout()">
+                <span class="btn-text">Complete Order</span>
+                <svg class="btn-icon" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M14 5l7 7m0 0l-7 7m7-7H3"/>
+                </svg>
+            </button>
+
+            <!-- Security Badge -->
+            <div class="security-badge">
+                <svg class="security-icon" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 15v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2zm10-10V7a4 4 0 00-8 0v4h8z"/>
+                </svg>
+                <span class="security-text">Your information is secure and encrypted</span>
+            </div>
+        </section>
+
+    </main>
+
+    <script>
+        // ========================================
+        // PAYMENT PAGE FUNCTIONALITY
+        // ========================================
+
+        let selectedPaymentMethod = 'qr';
+        let uploadedFile = null;
+
+        // ========================================
+        // PAYMENT METHOD SELECTION
+        // ========================================
+        function selectPaymentMethod(method) {
+            selectedPaymentMethod = method;
+            
+            const qrOption = document.getElementById('qrOption');
+            const codOption = document.getElementById('codOption');
+            
+            if (method === 'qr') {
+                qrOption.classList.add('active');
+                codOption.classList.remove('active');
+            } else {
+                codOption.classList.add('active');
+                qrOption.classList.remove('active');
+            }
+        }
+
+        // ========================================
+        // FILE UPLOAD HANDLING
+        // ========================================
+        function handleFileUpload(event) {
+            const file = event.target.files[0];
+            
+            if (!file) return;
+            
+            const validTypes = ['image/png', 'image/jpeg', 'image/jpg'];
+            if (!validTypes.includes(file.type)) {
+                showNotification('Please upload a PNG or JPG image', 'error');
+                event.target.value = '';
+                return;
+            }
+            
+            const maxSize = 5 * 1024 * 1024;
+            if (file.size > maxSize) {
+                showNotification('File size must be less than 5MB', 'error');
+                event.target.value = '';
+                return;
+            }
+            
+            uploadedFile = file;
+            showUploadPreview(file);
+        }
+
+        function showUploadPreview(file) {
+            const preview = document.getElementById('uploadPreview');
+            
+            preview.innerHTML = `
+                <svg class="preview-icon" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"/>
+                </svg>
+                <span class="preview-text">${file.name} (${formatFileSize(file.size)})</span>
+                <button type="button" onclick="removeUpload()" class="remove-btn">
+                    Remove
+                </button>
+            `;
+            
+            preview.classList.add('active');
+        }
+
+        function removeUpload() {
+            uploadedFile = null;
+            document.getElementById('paymentProof').value = '';
+            document.getElementById('uploadPreview').classList.remove('active');
+            document.getElementById('uploadPreview').innerHTML = '';
+        }
+
+        function formatFileSize(bytes) {
+            if (bytes === 0) return '0 Bytes';
+            const k = 1024;
+            const sizes = ['Bytes', 'KB', 'MB'];
+            const i = Math.floor(Math.log(bytes) / Math.log(k));
+            return Math.round(bytes / Math.pow(k, i) * 100) / 100 + ' ' + sizes[i];
+        }
+
+        // ========================================
+        // FORM VALIDATION
+        // ========================================
+        function validateForm() {
+            const form = document.getElementById('checkoutForm');
+            const requiredFields = form.querySelectorAll('[required]');
+            let isValid = true;
+            let firstInvalidField = null;
+            
+            requiredFields.forEach(field => {
+                if (!field.value.trim()) {
+                    isValid = false;
+                    field.style.borderColor = '#f0d4cc';
+                    field.style.background = '#faf0ed';
+                    
+                    if (!firstInvalidField) {
+                        firstInvalidField = field;
+                    }
+                    
+                    setTimeout(() => {
+                        field.style.borderColor = '';
+                        field.style.background = '';
+                    }, 3000);
+                }
+            });
+            
+            if (!isValid && firstInvalidField) {
+                firstInvalidField.focus();
+                firstInvalidField.scrollIntoView({ behavior: 'smooth', block: 'center' });
+            }
+            
+            return isValid;
+        }
+
+        function validateEmail(email) {
+            const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+            return emailRegex.test(email);
+        }
+
+        function validatePhone(phone) {
+            const phoneRegex = /^[+]?[\d\s-]{10,}$/;
+            return phoneRegex.test(phone);
+        }
+
+        // ========================================
+        // CHECKOUT HANDLING
+        // ========================================
+        function handleCheckout() {
+            if (!validateForm()) {
+                showNotification('Please fill in all required fields', 'error');
+                return;
+            }
+            
+            const email = document.getElementById('email').value;
+            if (!validateEmail(email)) {
+                showNotification('Please enter a valid email address', 'error');
+                document.getElementById('email').focus();
+                return;
+            }
+            
+            const phone = document.getElementById('phone').value;
+            if (!validatePhone(phone)) {
+                showNotification('Please enter a valid phone number', 'error');
+                document.getElementById('phone').focus();
+                return;
+            }
+            
+            if (selectedPaymentMethod === 'qr' && !uploadedFile) {
+                showNotification('Please upload your payment screenshot', 'error');
+                return;
+            }
+            
+            const formData = collectFormData();
+            showConfirmation(formData);
+        }
+
+        function collectFormData() {
+            return {
+                fullName: document.getElementById('fullName').value,
+                email: document.getElementById('email').value,
+                phone: document.getElementById('phone').value,
+                address: document.getElementById('address').value,
+                city: document.getElementById('city').value,
+                state: document.getElementById('state').value,
+                postalCode: document.getElementById('postalCode').value,
+                country: document.getElementById('country').value,
+                location: document.getElementById('location').value,
+                notes: document.getElementById('notes').value,
+                paymentMethod: selectedPaymentMethod,
+                paymentProof: uploadedFile ? uploadedFile.name : null
+            };
+        }
+
+        // ========================================
+        // NOTIFICATIONS
+        // ========================================
+        function showNotification(message, type = 'success') {
+            const notification = document.createElement('div');
+            const isSuccess = type === 'success';
+            
+            notification.style.cssText = `
+                position: fixed;
+                top: 2rem;
+                right: 2rem;
+                z-index: 9999;
+                transform: translateX(120%);
+                padding: 1rem 1.25rem;
+                border-radius: 10px;
+                background: ${isSuccess ? '#f0f4ed' : '#faf0ed'};
+                border: 1px solid ${isSuccess ? '#d4e3c8' : '#f0d4cc'};
+                box-shadow: 0 4px 12px rgba(139, 111, 77, 0.15);
+                transition: transform 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+                max-width: 380px;
+            `;
+            
+            notification.innerHTML = `
+                <div style="display: flex; align-items: center; gap: 0.75rem;">
+                    <svg style="width: 1.125rem; height: 1.125rem; color: ${isSuccess ? '#4a6741' : '#8b4a3d'}; flex-shrink: 0;" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        ${isSuccess 
+                            ? '<path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"/>'
+                            : '<path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"/>'
+                        }
+                    </svg>
+                    <div style="font-size: 0.875rem; color: #2c2420; font-weight: 500;">${message}</div>
+                </div>
+            `;
+            
+            document.body.appendChild(notification);
+            
+            setTimeout(() => notification.style.transform = 'translateX(0)', 100);
+            setTimeout(() => {
+                notification.style.transform = 'translateX(120%)';
+                setTimeout(() => notification.remove(), 400);
+            }, 3500);
+        }
+
+        // ========================================
+        // ORDER CONFIRMATION
+        // ========================================
+        function showConfirmation(formData) {
+            const overlay = document.createElement('div');
+            overlay.style.cssText = `
+                position: fixed;
+                top: 0;
+                left: 0;
+                width: 100%;
+                height: 100%;
+                background: rgba(44, 36, 32, 0.6);
+                backdrop-filter: blur(4px);
+                z-index: 10000;
+                display: flex;
+                align-items: center;
+                justify-content: center;
+                padding: 2rem;
+                opacity: 0;
+                transition: opacity 0.3s ease;
+            `;
+            
+            const modal = document.createElement('div');
+            modal.style.cssText = `
+                max-width: 480px;
+                width: 100%;
+                background: #fdfcfb;
+                border-radius: 16px;
+                padding: 2.5rem;
+                text-align: center;
+                transform: scale(0.95);
+                transition: transform 0.3s ease;
+                box-shadow: 0 20px 40px rgba(139, 111, 77, 0.2);
+            `;
+            
+            const paymentMethodText = selectedPaymentMethod === 'qr' ? 'QR Payment' : 'Cash on Delivery';
+            
+            modal.innerHTML = `
+                <div style="width: 3.5rem; height: 3.5rem; margin: 0 auto 1.5rem; background: #f0f4ed; border-radius: 50%; display: flex; align-items: center; justify-content: center;">
+                    <svg style="width: 2rem; height: 2rem; color: #4a6741;" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"/>
+                    </svg>
+                </div>
+                <h2 style="font-family: 'Playfair Display', serif; font-size: 1.75rem; margin-bottom: 0.75rem; color: #2c2420;">Order Confirmed!</h2>
+                <p style="color: #6b5d52; margin-bottom: 2rem; line-height: 1.6; font-size: 0.9375rem;">
+                    Thank you, ${formData.fullName}! Your order has been successfully placed.
+                    ${selectedPaymentMethod === 'qr' ? 'We have received your payment confirmation.' : 'Please keep the exact amount ready for delivery.'}
+                </p>
+                
+                <div style="background: #f5f1ed; border-radius: 12px; padding: 1.5rem; margin-bottom: 2rem; text-align: left; border: 1px solid #e5ddd5;">
+                    <div style="font-size: 0.75rem; text-transform: uppercase; letter-spacing: 0.05em; color: #8b6f4d; margin-bottom: 1rem; font-weight: 600;">Order Details</div>
+                    <div style="display: flex; justify-content: space-between; margin-bottom: 0.625rem; font-size: 0.875rem;">
+                        <span style="color: #6b5d52;">Payment Method</span>
+                        <span style="font-weight: 600; color: #2c2420;">${paymentMethodText}</span>
+                    </div>
+                    <div style="display: flex; justify-content: space-between; margin-bottom: 0.625rem; font-size: 0.875rem;">
+                        <span style="color: #6b5d52;">Delivery To</span>
+                        <span style="font-weight: 600; color: #2c2420;">${formData.city}, ${formData.state}</span>
+                    </div>
+                    <div style="display: flex; justify-content: space-between; font-size: 0.875rem;">
+                        <span style="color: #6b5d52;">Contact</span>
+                        <span style="font-weight: 600; color: #2c2420;">${formData.phone}</span>
+                    </div>
+                </div>
+                
+                <p style="font-size: 0.8125rem; color: #9a8a7a; margin-bottom: 1.5rem;">
+                    A confirmation email has been sent to <strong style="color: #6b5d52;">${formData.email}</strong>
+                </p>
+                
+                <button onclick="closeConfirmation()" style="width: 100%; padding: 0.875rem; background: linear-gradient(135deg, #b8936f 0%, #d4a574 100%); border: none; border-radius: 10px; font-size: 0.875rem; font-weight: 600; cursor: pointer; color: white; transition: all 0.2s ease; box-shadow: 0 4px 12px rgba(184, 147, 111, 0.3);">
+                    Continue Shopping
+                </button>
+            `;
+            
+            overlay.appendChild(modal);
+            document.body.appendChild(overlay);
+            
+            setTimeout(() => {
+                overlay.style.opacity = '1';
+                modal.style.transform = 'scale(1)';
+            }, 10);
+            
+            window.confirmationOverlay = overlay;
+        }
+
+        function closeConfirmation() {
+            const overlay = window.confirmationOverlay;
+            if (overlay) {
+                overlay.style.opacity = '0';
+                setTimeout(() => {
+                    overlay.remove();
+                    window.location.href = 'index.html';
+                }, 300);
+            }
+        }
+
+        // ========================================
+        // INPUT FORMATTING
+        // ========================================
+        document.addEventListener('DOMContentLoaded', () => {
+            const phoneInput = document.getElementById('phone');
+            if (phoneInput) {
+                phoneInput.addEventListener('input', (e) => {
+                    let value = e.target.value.replace(/[^\d+\s-]/g, '');
+                    e.target.value = value;
+                });
+            }
+            
+            const postalCodeInput = document.getElementById('postalCode');
+            if (postalCodeInput) {
+                postalCodeInput.addEventListener('input', (e) => {
+                    let value = e.target.value.replace(/[^a-zA-Z0-9]/g, '');
+                    e.target.value = value.toUpperCase();
+                });
+            }
+        });
+    </script>
+</body>
+</html>

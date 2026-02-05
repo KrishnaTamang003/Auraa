@@ -1,0 +1,189 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>The Aura Collection | Sculptural Luxury</title>
+    
+    <!-- Google Fonts - Premium Typography -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600&family=Cormorant+Garamond:wght@300;400;500;600;700&family=Outfit:wght@300;400;500&display=swap" rel="stylesheet">
+    
+    <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+
+    <!-- Overlay for modals -->
+    <div class="overlay" id="overlay"></div>
+
+    <!-- Login Modal -->
+    <div class="login-box glass-effect" id="loginBox">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h2 class="modal-title">Welcome</h2>
+                <p class="modal-subtitle">Sign in to your account</p>
+            </div>
+            <form id="loginForm" class="login-form">
+                <input type="email" id="emailInput" class="input-field" placeholder="Email address" required>
+                <input type="password" id="passwordInput" class="input-field" placeholder="Password" required>
+                <button type="submit" class="submit-btn glass-btn">Sign In</button>
+            </form>
+            <div class="modal-footer">
+                <button type="button" class="guest-btn" id="guestBtn">Continue as guest</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Cart Modal -->
+    <div class="cart-box glass-effect" id="cartBox">
+        <div class="cart-content">
+            <div class="cart-header">
+                <h2 class="cart-title">Your Cart</h2>
+                <button type="button" id="closeCartBtn" class="close-btn" aria-label="Close cart">&times;</button>
+            </div>
+            
+            <div id="cartItemsList" class="cart-items-list">
+                <!-- Cart items will be inserted here -->
+            </div>
+
+            <div class="cart-footer">
+                <div class="cart-total">
+                    <span class="total-label">Subtotal</span>
+                    <span id="totalPrice" class="total-amount">Rs. 0</span>
+                </div>
+                <a href="checkout-payment.html">
+  <button type="button" class="checkout-btn glass-btn">Proceed to Checkout</button>
+</a>
+            </div>
+        </div>
+    </div>
+
+    <!-- Mobile Menu -->
+    <div class="mobile-menu" id="mobileMenu">
+        <a href="TheGalary.html" class="mobile-nav-item">The Gallery</a>
+        <a href="About.html" class="mobile-nav-item">About Us</a>
+        <a href="Contact.html" class="mobile-nav-item">Contact</a>
+    </div>
+
+    <!-- Animated Background -->
+    <div class="background">
+        <div class="bg-gradient bg-lavender active" data-theme="lavender"></div>
+        <div class="bg-gradient bg-rose" data-theme="rose"></div>
+        <div class="bg-gradient bg-forest" data-theme="forest"></div>
+        <div class="bg-gradient bg-citrus" data-theme="citrus"></div>
+    </div>
+
+    <!-- Header -->
+    <header class="header fade-in">
+        <a href="Auramain.html" class="logo">AURA</a>
+        <nav class="nav-menu" aria-label="Main navigation">
+            <a href="TheGalary.html" class="nav-item">The Gallery</a>
+            <a href="About.html" class="nav-item">About Us</a>
+            <a href="Contact.html" class="nav-item">Contact</a>
+        </nav>
+        <div class="header-actions">
+            <div id="userProfile" class="user-profile hidden">
+                <div class="avatar" id="userAvatar" role="button" tabindex="0"></div>
+            </div>
+            <button type="button" id="loginBtn" class="action-btn glass-btn">Sign In</button>
+            <button type="button" class="action-btn glass-btn cart-btn" id="cartBtn">
+                Cart
+                <span class="badge" id="cartBadge">0</span>
+            </button>
+            <!-- Mobile Menu Toggle Button -->
+            <div class="menu-toggle" id="menuToggle">
+                <span></span>
+                <span></span>
+                <span></span>
+            </div>
+        </div>
+    </header>
+
+    <!-- Main Content -->
+    <main class="main-content">
+        
+        <!-- Product Info -->
+        <article class="info-card fade-in">
+            <div class="content-box active" id="infoContent">
+                <p id="editionNum" class="edition-label">Edition 01</p>
+                <h1 id="productTitle" class="product-name">Deep Lavender</h1>
+                <p id="productDesc" class="product-description">
+                    A handcrafted monolith of serenity. Notes of French Highland Lavender fused with smoked cedarwood. Designed for the ritual of stillness.
+                </p>
+            </div>
+        </article>
+
+        <!-- Product Image -->
+        <div class="image-wrapper fade-in">
+            <div id="imageGlow" class="image-glow"></div>
+            <div id="imageContainer" class="image-container">
+                <img 
+                    id="imageLavender" 
+                    src="lavender-soap.png"
+                    alt="Deep Lavender Artisanal Soap" 
+                    class="product-image active"
+                    data-theme="lavender"
+                >
+                <img 
+                    id="imageRose" 
+                    src="pink.png"
+                    alt="Rose Quartz Artisanal Soap" 
+                    class="product-image"
+                    data-theme="rose"
+                >
+                <img 
+                    id="imageForest" 
+                    src="Green.png"
+                    alt="Forest Green Artisanal Soap" 
+                    class="product-image"
+                    data-theme="forest"
+                >
+                <img 
+                    id="imageCitrus" 
+                    src="Gold.png"
+                    alt="Citrus Gold Artisanal Soap" 
+                    class="product-image"
+                    data-theme="citrus"
+                >
+            </div>
+        </div>
+
+        <!-- Product Details -->
+        <aside class="details-card fade-in">
+            <div class="content-box active" id="detailsContent">
+                <div class="detail-item">
+                    <span class="detail-label">Weight</span>
+                    <span class="detail-value">240g</span>
+                </div>
+                <div class="detail-item">
+                    <span class="detail-label">Longevity</span>
+                    <span id="longevityValue" class="detail-value">60 Hours</span>
+                </div>
+                <div class="detail-item">
+                    <span class="detail-label">Price</span>
+                    <span id="priceValue" class="detail-value">Rs. 4,850</span>
+                </div>
+                <button type="button" id="addCartBtn" class="add-cart-btn glass-btn">Add to Cart</button>
+            </div>
+        </aside>
+    </main>
+
+    <!-- Footer -->
+    <footer class="footer fade-in">
+        <div class="copyright">© 2026 Aura Atelier</div>
+        
+        <!-- Navigation Wrapper -->
+        <nav class="navigation-wrapper" aria-label="Product navigation">
+            <div class="dots-container">
+                <button type="button" onclick="changeTheme('lavender', 0)" class="dot active" data-index="0" aria-label="View Deep Lavender"></button>
+                <button type="button" onclick="changeTheme('rose', 1)" class="dot" data-index="1" aria-label="View Rose Quartz"></button>
+                <button type="button" onclick="changeTheme('forest', 2)" class="dot" data-index="2" aria-label="View Forest Green"></button>
+                <button type="button" onclick="changeTheme('citrus', 3)" class="dot" data-index="3" aria-label="View Citrus Gold"></button>
+            </div>
+        </nav>
+    </footer>
+
+    <script src="script.js"></script>
+</body>
+</html>
